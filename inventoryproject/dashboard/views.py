@@ -2,9 +2,10 @@ from django import forms
 from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from .models import Product
+from .models import Product, Order
 from django.contrib.auth.decorators import login_required
 from .forms import ProductFrom
+from django.contrib.auth.models import User
 # Create your views here.
 
 @login_required
@@ -13,7 +14,18 @@ def index(request):
 
 @login_required
 def staff(request):
-    return render(request, 'dashboard/staff.html')
+    workers = User.objects.all()
+    context = {
+        'workers':workers
+    }
+    return render(request, 'dashboard/staff.html',context)
+
+def staff_detail(request, pk):
+    workers = User.objects.get(id=pk)
+    context = {
+        'workers':workers,
+    }
+    return render(request,'dashboard/staff_detail.html',context)
 
 @login_required
 def product(request):
@@ -56,4 +68,8 @@ def product_update(request, pk):
 
 @login_required
 def order(request):
-    return render(request, 'dashboard/order.html')
+    orders = Order.objects.all()
+    context = {
+        'orders':orders
+    }
+    return render(request, 'dashboard/order.html',context)
