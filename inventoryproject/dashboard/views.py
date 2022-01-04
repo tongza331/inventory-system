@@ -1,9 +1,9 @@
 from django import forms
+from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from .models import Product
 from django.contrib.auth.decorators import login_required
-from .models import Product
 from .forms import ProductFrom
 # Create your views here.
 
@@ -38,6 +38,21 @@ def product_delete(request, pk):
         item.delete()
         return redirect('dashboard-product')
     return render(request, 'dashboard/product_delete.html')
+
+def product_update(request, pk):
+    item = Product.objects.get(id=pk)
+    if request.method=='POST':
+        form = ProductFrom(request.POST, instance=item)
+        if form.is_valid():
+            form.save()
+            return redirect('dashboard-product')
+    else:
+        form = ProductFrom(instance=item)
+
+    context = {
+        'form':form
+    }
+    return render(request, 'dashboard/product_update.html',context)
 
 @login_required
 def order(request):
