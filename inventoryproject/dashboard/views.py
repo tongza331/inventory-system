@@ -49,6 +49,8 @@ def product(request):
         form = ProductFrom(request.POST)
         if form.is_valid():
             form.save()
+            product_name = form.cleaned_data.get('name') # เป็นการ get data name ใน table product
+            messages.success(request, f'{product_name} has been added')
             return redirect('dashboard-product') # ถ้าใส่ action ใน form ของ html ไม่จำเป็นต้องใส่ return ก็ได้
     else:
         form = ProductFrom()
