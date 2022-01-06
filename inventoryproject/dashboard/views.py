@@ -22,6 +22,16 @@ def index(request):
     if request.method == "POST":
         form = OrderForm(request.POST)
         if form.is_valid():
+            product_name = form.cleaned_data.get('product')
+            order_quantity = form.cleaned_data.get('order_quantity')
+            if product_name.quantity == 0:
+                messages.info(request, f'{product_name.name} out of stock')
+                return redirect('dashboard-index')
+            final_quantity = int(product_name.quantity) - int(order_quantity)
+            product_query = Product.objects.get(name=product_name.name)
+            product_query.quantity = final_quantity
+            product_query.save()
+
             instance = form.save(commit=False)
             instance.staff = request.user
             instance.save()
