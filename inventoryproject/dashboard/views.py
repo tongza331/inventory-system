@@ -27,6 +27,11 @@ def index(request):
             if product_name.quantity == 0:
                 messages.info(request, f'{product_name.name} out of stock')
                 return redirect('dashboard-index')
+
+            if int(product_name.quantity) <  int(order_quantity):
+                messages.info(request, f'{product_name.name} quantity is exceeded')
+                return redirect('dashboard-index')
+            
             final_quantity = int(product_name.quantity) - int(order_quantity)
             product_query = Product.objects.get(name=product_name.name)
             product_query.quantity = final_quantity
